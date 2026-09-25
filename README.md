@@ -2,17 +2,13 @@
 
 A modern HR and payroll dashboard for UAE teams. Orbit HR is designed around a simple goal: make people operations feel clear, calm, and human.
 
-## Current MVP
+## Delivered in this phase
 
-- Responsive HR dashboard with overview metrics
-- People directory with search
-- Payroll spend visualisation
-- Approval queue for leave, expenses, and contracts
-- Add employee modal
-- AED/UAE-ready labels and payroll overview
-- Responsive mobile navigation
-- PostgreSQL/Prisma domain schema for users, employees, leave, payroll, documents, and audit logs
-- Payroll preview API with configurable allowances, overtime, deductions, and unpaid leave
+- Prisma-backed employee and leave API routes (`/api/employees`, `/api/leave`)
+- Leave and attendance workspace with request form and approval-ready statuses
+- Documents library with print preview and browser PDF/print workflow
+- Employee directory and payroll preview screens
+- Corrected Prisma schema and TypeScript path configuration
 
 ## Run locally
 
@@ -26,20 +22,16 @@ npm run db:seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Routes:
 
-Payroll preview example:
+- `/` dashboard
+- `/employees` employee directory
+- `/payroll` payroll preview
+- `/leave` leave and attendance
+- `/documents` printable documents
 
-```bash
-curl -X POST http://localhost:3000/api/payroll/preview \
-  -H 'content-type: application/json' \
-  -d '{"basicSalary":18500,"housingAllowance":3500,"transportAllowance":1000,"overtime":500,"deductions":250,"unpaidLeaveDays":1}'
-```
+The API requires a configured PostgreSQL database. The current UI uses representative data while the authentication and persistence wiring is completed.
 
 ## Important UAE payroll note
 
 UAE payroll legislation, contracts, benefits, end-of-service calculations, and WPS requirements must be validated with a qualified UAE payroll/accounting professional before production use. The calculation layer is intentionally configurable and does not claim to implement every statutory rule.
-
-## Roadmap
-
-Next: authentication, employee CRUD screens backed by Prisma, leave balance workflows, payroll finalization and approval, secure PDF payslips/leave forms, storage integration, and audit-log middleware.

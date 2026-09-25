@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
 import './globals.css';
+import './feature-pages.css';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Orbit HR | People operations, simplified', description: 'UAE HR and payroll management' };
 
