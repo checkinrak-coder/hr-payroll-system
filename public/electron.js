@@ -1,19 +1,21 @@
-const { app, BrowserWindow, Menu } = require('electron');
-const isDev = require('electron-is-dev');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
-const sqlite3 = require('better-sqlite3');
 const fs = require('fs');
 const os = require('os');
+
+const isDev = require('electron-is-dev');
 
 const APP_DATA_DIR = path.join(os.homedir(), '.orbit-hr');
 const DB_PATH = path.join(APP_DATA_DIR, 'orbit.db');
 
-// Create app data directory if it doesn't exist
-if (!fs.existsSync(APP_DATA_DIR)) {
-  fs.mkdirSync(APP_DATA_DIR, { recursive: true });
-}
-
 let mainWindow;
+
+function ensureDataDirectory() {
+  if (!fs.existsSync(APP_DATA_DIR)) {
+    fs.mkdirSync(APP_DATA_DIR, { recursive: true });
+    console.log(`Created app data directory: ${APP_DATA_DIR}`);
+  }
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -26,10 +28,14 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
     },
-    icon: path.join(__dirname, 'icon.png'),
+    icon: process.platform === 'win32' ? path.join(__dirname, 'icon.ico') : path.join(__dirname, 'icon.png'),
   });
 
+  // Set DATABASE_URL for this window
+  process.env.DATABASE_URL = `file:${DB_PATH}`;
+
   const startUrl = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../.next/standalone/.next/server/app')}`;
+
   mainWindow.loadURL(startUrl);
 
   if (isDev) {
@@ -41,7 +47,10 @@ function createWindow() {
   });
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+  ensureDataDirectory();
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -62,14 +71,7 @@ const menu = Menu.buildFromTemplate([
   },
   {
     label: 'Edit',
-    submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
-      { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
-    ],
+    submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }],
   },
   {
     label: 'Help',
@@ -78,3 +80,6 @@ const menu = Menu.buildFromTemplate([
 ]);
 
 Menu.setApplicationMenu(menu);
+
+ipcMain.handle('get-app-data-path', () => APP_DATA_DIR);
+ipcMain.handle('get-db-path', () => DB_PATH);

@@ -1,7 +1,7 @@
 {
   "name": "orbit-hr-desktop",
   "version": "1.0.0",
-  "description": "Orbit HR - Desktop HR and Payroll Management System",
+  "description": "Orbit HR - Desktop HR and Payroll Management System for UAE",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,
@@ -9,18 +9,63 @@
     "dev": "concurrently \"npm run dev:next\" \"wait-on http://localhost:3000 && npm run dev:electron\"",
     "dev:next": "next dev",
     "dev:electron": "electron public/electron.js",
-    "build": "next build && npm run build:electron",
+    "build:next": "next build",
+    "build": "npm run build:next && npm run build:electron",
     "build:electron": "electron-builder",
+    "build:win": "npm run build:next && electron-builder --win",
+    "build:mac": "npm run build:next && electron-builder --mac",
+    "build:linux": "npm run build:next && electron-builder --linux",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "build": {
+    "appId": "com.orbithr.desktop",
+    "productName": "Orbit HR",
+    "files": [
+      "public/electron.js",
+      "public/preload.js",
+      "public/icon.png",
+      ".next/standalone",
+      ".next/static",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Orbit HR"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "lucide-react": "^0.468.0",
     "next": "14.2.5",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "better-sqlite3": "^9.4.3"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",
