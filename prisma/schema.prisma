@@ -7,10 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role { ADMIN HR_MANAGER PAYROLL_OFFICER MANAGER EMPLOYEE }
-enum EmployeeStatus { ACTIVE ON_LEAVE SUSPENDED TERMINATED }
-enum LeaveStatus { PENDING APPROVED REJECTED CANCELLED }
-enum PayrollStatus { DRAFT PENDING_APPROVAL APPROVED PAID }
+enum Role {
+  ADMIN
+  HR_MANAGER
+  PAYROLL_OFFICER
+  MANAGER
+  EMPLOYEE
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  ON_LEAVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum PayrollStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  PAID
+}
 
 model User {
   id        String   @id @default(cuid())
